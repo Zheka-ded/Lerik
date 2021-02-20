@@ -5,7 +5,7 @@ import './App.scss';
 
 export default function Appp () {
     
-    const routes = useRoutes(false)
+    const routes = useRoutes(true)
 
     return (
         <Router>

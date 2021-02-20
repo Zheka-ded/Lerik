@@ -10,6 +10,26 @@ export default function useRoutes (isAuthenticated) {
     if (isAuthenticated){
         return (
             <Switch>
+                
+                <Route path="/" exact>
+                    <MainPage />
+                </Route>
+
+                <Route path="/category-goods" exact>
+                    <CategoryPage />
+                </Route>
+
+                <Route path="/goods" exact>
+                    <GoodsPage />
+                </Route>
+
+                <Route path="/detail/:id">
+                    <DetailPage />
+                </Route>
+                
+                <Route path="/auth" exact>
+                    <AuthPage />
+                </Route>
 
                 <Route path="/admin" exact>
                     <AdminPage />

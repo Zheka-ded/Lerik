@@ -1,4 +1,36 @@
 .AdminPage{
-    color: dodgerblue;
-    font-size: medium;
+    padding: 70px;
+
+    // &__form-wrap{
+
+    //     form{
+    //         display: flex;
+    //         flex-direction: column;
+    //         align-items: center;
+    //         width: 320px;
+    //         padding: 15px;
+
+    //         input, button{
+    //             width: 100%;
+    //             border-radius: 10px;
+    //             border: none;
+    //             border: 1px solid #ffcdd2;
+    //             margin: 15px;
+    //             padding: 15px;
+    //             outline: none;
+    //             transition: 0.3s all ease;
+    //         }
+
+    //         button{
+    //             width: calc(100% + 32px);
+    //         }
+
+    //         input:focus, button:focus{
+    //             border-color: #19d3a4;
+    //             transition: 0.3s all ease;
+    //         }
+
+    //     }
+    // }
+
 }

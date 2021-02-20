@@ -1,38 +1,8 @@
 .AuthPage{
     padding: 70px;
 
-    &__form-wrap{
+    // &__form-wrap{
 
-        form{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 320px;
-            padding: 15px;
-
-            input, button{
-                width: 100%;
-                border-radius: 10px;
-                border: none;
-                border: 1px solid #311b92;
-                margin: 15px;
-                padding: 15px;
-                outline: none;
-            }
-
-            button{
-                width: calc(100% + 32px);
-            }
-
-            input:focus, button:focus{
-                border-color: #19d3a4;
-            }
-
-
-        }
-    }
-
-    // &__form-btn-wrap{
-    //     width: 280px;
     // }
+
 }

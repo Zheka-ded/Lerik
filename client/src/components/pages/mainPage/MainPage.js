@@ -1,8 +1,34 @@
 import './MainPage.scss';
+import useHttp from '../../../hooks/http.hook';
+import { useState } from 'react';
 
 // import { Link } from 'react-router-dom';
 
 export default function MainPage () {
+
+    const { request } = useHttp();
+
+    const [data, setData] = useState(null)
+
+    useState(() => {
+        allProducts();
+    }, [])
+
+    async function allProducts () {
+        try {
+            const data = await request('/api/product/loading', 'GET');
+            setData(data);
+        } catch (e) {
+            
+        }
+    }
+
+    // product()
+
+
+    console.log(data)
+
+    
 
     return (
         <div className="MainPage">

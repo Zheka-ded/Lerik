@@ -3,18 +3,21 @@ const bcrypt = require('bcryptjs');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 const {check, validationResult} = require('express-validator');
-const User = require('../models/User');
+const Admin = require('../models/Admin');
 const router = Router();
 
 //  /api/auth/register (мне это не нужно)
 router.post(
     '/register',
     [
+        check('name', 'Введите имя').exists(),
         check('email', 'Некоректный email').isEmail(),
-        check('password', 'Минимальная длинна пароля 6 символов').isLength({ min: 6 })
+        check('tel', 'Введите номер телехвона').isLength({min:12, max:12}),
+        check('password', 'Минимальная длинна пароля 9 символов').isLength({ min: 9 })
     ],
     async (req, res) => {
     try {
+
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -24,23 +27,29 @@ router.post(
             })
         }
 
-        const {email, password} = req.body;
+        const {name, email, tel, password} = req.body;
 
-        const candidate = await User.findOne({ email });
+        const candidateEmail = await Admin.findOne({ email });
 
-        if (candidate) {
+        if (candidateEmail) {
+            return res.status(400).json({ message: 'Такой пользователь уже существует' });
+        };
+
+        const candidateTel = await Admin.findOne({ tel });
+
+        if (candidateTel) {
             return res.status(400).json({ message: 'Такой пользователь уже существует' });
         };
 
         const hashedPassword = await bcrypt.hash(password, 12);
-        const user = new User({ email, password: hashedPassword });
+        const admin = new Admin({ name, email, tel, password: hashedPassword });
 
-        await user.save();
+        await admin.save();
 
         res.status(201).json({ message: 'Пользователь создан' });
 
     } catch (e) {
-        res.status(500).json({message: 'Что-то пошло не так'})
+        res.status(500).json({message: 'Что-то пошло не так'});
     }
 });
 //  вот по эту строчку
@@ -49,12 +58,15 @@ router.post(
 router.post(
     '/login',
     [
+        check('name', 'Введите имя').exists(),
         check('email', 'Введите корректный email').normalizeEmail().isEmail(),
-        check('password', 'Введите пароль').exists()
+        check('tel', 'Введите номер телехвона').isLength({min:12, max:12}),
+        check('password', 'Введите пароль').isLength({min:9}),
     ],
     async (req, res) => {
     try {
         const errors = validationResult(req);
+        console.log(errors)
 
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -63,30 +75,41 @@ router.post(
             })
         }
 
-        const {email, password} = req.body;
+        const { name, email, tel, password} = req.body;
 
-        const user = await User.findOne({ email });
+        const isMatchName = await Admin.find(({ name }));
 
-        if(!user) {
-            return res.status(400).json({ message: 'Пользователь не найден' })
+        if(!isMatchName) {
+            return res.status(400).json({ message: 'Имя не правильно' });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const admin = await Admin.findOne({ email });
 
-        if(!isMatch) {
-            return res.status(400).json({ message: 'Неверный пароль' })
+        if(!admin) {
+            return res.status(400).json({ message: 'Пользователь не найден' });
+        }
+        const adminTel = await Admin.findOne({ tel });
+
+        if(!adminTel) {
+            return res.status(400).json({ message: 'Пользователь не найден' });
+        }
+
+        const isMatchPass = await bcrypt.compare(password, admin.password);
+
+        if(!isMatchPass) {
+            return res.status(400).json({ message: 'Неверный пароль' });
         }
 
         const token = jwt.sign(
-            {userId: user.id},
+            {AdminId: admin.id},
             config.get('jwtSecret'),
             { expiresIn: '1h' }
         )
 
-        res.json({ token, userId: user.id })
+        res.json({ token, adminId: admin.id });
 
     } catch (e) {
-        res.status(500).json({message: 'Что-то пошло не так'})
+        res.status(500).json({message: 'Что-то пошло не так'});
     }
 });
 
