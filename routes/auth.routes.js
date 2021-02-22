@@ -77,7 +77,7 @@ router.post(
 
         const { name, email, tel, password} = req.body;
 
-        const isMatchName = await Admin.find(({ name }));
+        const isMatchName = await Admin.findOne(({ name }));
 
         if(!isMatchName) {
             return res.status(400).json({ message: 'Имя не правильно' });

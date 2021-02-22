@@ -1,45 +1,38 @@
-import './MainPage.scss';
-import useHttp from '../../../hooks/http.hook';
 import { useState } from 'react';
 
-// import { Link } from 'react-router-dom';
+import useHttp from '../../../hooks/http.hook';
+
+import './MainPage.scss';
 
 export default function MainPage () {
 
     const { request } = useHttp();
 
-    const [data, setData] = useState(null)
-
-    useState(() => {
-        allProducts();
-    }, [])
+    const [data, setData] = useState(null);
 
     async function allProducts () {
         try {
-            const data = await request('/api/product/loading', 'GET');
-            setData(data);
+            const fetched = await request('/api/product/loading', 'GET', null);
+            setData(fetched);
         } catch (e) {
             
         }
     }
+    // Не правильно тут
+    useState(() => {
+        allProducts()
+    }, [allProducts])
 
-    // product()
-
-
-    console.log(data)
-
-    
+    console.log(data);
 
     return (
         <div className="MainPage">
             <h1>MainPage</h1>
-            
-            {/* <ul>
-                <li><Link to="/">Главная</Link></li>
-                <li><Link to="/category-goods">Категории товаров</Link></li>
-                <li><Link to="/goods">Товары</Link></li>
-                <li><Link to="/detail/:id">Детальнее</Link></li>
-            </ul> */}
+
+            {data !== null && data.map(elem => (
+                <div key={elem._id} ><h2>{elem.title}</h2></div>
+            ))}
+
         </div>
     )
 }

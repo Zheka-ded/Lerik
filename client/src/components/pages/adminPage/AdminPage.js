@@ -1,6 +1,7 @@
-import './AdminPage.scss';
 import {useState, useEffect} from 'react';
 import useHttp from '../../../hooks/http.hook';
+
+import './AdminPage.scss';
 
 export default function AdminPage () {
 

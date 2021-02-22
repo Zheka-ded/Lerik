@@ -37,7 +37,6 @@ export default function AuthPage () {
         }
     }
 
-    // console.log(form);
 
     return (
         <div className="AuthPage">

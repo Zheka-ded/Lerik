@@ -1,9 +1,9 @@
 import { Switch, Route, Redirect } from 'react-router-dom';
 import AdminPage from './components/pages/adminPage/AdminPage';
-import DetailPage from './components/pages/detailPage/DetailPage';
+// import DetailPage from './components/pages/detailPage/DetailPage';
 import MainPage from './components/pages/mainPage/MainPage';
-import CategoryPage from './components/pages/categoryPage/CategoryPage';
-import GoodsPage from './components/pages/goodsPage/GoodsPage';
+// import CategoryPage from './components/pages/categoryPage/CategoryPage';
+// import GoodsPage from './components/pages/goodsPage/GoodsPage';
 import AuthPage from './components/pages/authPage/AuthPage';
 
 export default function useRoutes (isAuthenticated) {
@@ -15,17 +15,17 @@ export default function useRoutes (isAuthenticated) {
                     <MainPage />
                 </Route>
 
-                <Route path="/category-goods" exact>
+                {/* <Route path="/category-goods" exact>
                     <CategoryPage />
-                </Route>
+                </Route> */}
 
-                <Route path="/goods" exact>
+                {/* <Route path="/goods" exact>
                     <GoodsPage />
-                </Route>
+                </Route> */}
 
-                <Route path="/detail/:id">
+                {/* <Route path="/detail/:id">
                     <DetailPage />
-                </Route>
+                </Route> */}
                 
                 <Route path="/auth" exact>
                     <AuthPage />
@@ -47,17 +47,17 @@ export default function useRoutes (isAuthenticated) {
                 <MainPage />
             </Route>
 
-            <Route path="/category-goods" exact>
+            {/* <Route path="/category-goods" exact>
                 <CategoryPage />
-            </Route>
+            </Route> */}
 
-            <Route path="/goods" exact>
+            {/* <Route path="/goods" exact>
                 <GoodsPage />
-            </Route>
+            </Route> */}
 
-            <Route path="/detail/:id">
+            {/* <Route path="/detail/:id">
                 <DetailPage />
-            </Route>
+            </Route> */}
             
             <Route path="/auth" exact>
                 <AuthPage />
