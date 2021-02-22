@@ -7,9 +7,12 @@ export default function Nav () {
         <nav className="Nav">
             <ul>
                 <li><Link to="/">Главная</Link></li>
-                {/* <li><Link to="/category-goods">Категории товаров</Link></li>
-                <li><Link to="/goods">Товары</Link></li> */}
-                <li><Link to="/detail/:id">Детальнее</Link></li>
+                <li><Link to="/delivery-and-payment">Доставка и оплата</Link></li>
+                <li><Link to="/sewing">Пошив штор</Link></li>
+                <li><Link to="/dimension">Замер</Link></li>
+                <li><Link to="/articles">Статьи</Link></li>
+                <li><Link to="/contacts">Контакты</Link></li>
+                {/* <li><Link to="/detail/:id">Детальнее</Link></li> */}
             </ul>
         </nav>
     )

@@ -5,7 +5,7 @@ export default function Logo () {
 
     return (
         <div className="Logo">
-            <Link to="/">LOGO</Link>
+            <Link to="/">ГАРДИН</Link>
         </div>
     )
 }
