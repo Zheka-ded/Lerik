@@ -29,7 +29,7 @@
                     content: '';
                     position: absolute;
                     top: 0;
-                    left: -50%;
+                    left: -60%;
                     width: 35px;
                     height: 100%;
                     background-color: rgba(253,253,253, 0.8);
@@ -52,7 +52,7 @@
 
 @keyframes move_light{
   from{
-    left: -50%;
+    left: -60%;
     // transform: translateX(-175%) skewX(-45deg);
   }
   to{
