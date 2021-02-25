@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+// import ProductsSubNav from '../productsSubNav/ProductsSubNav';
 import './ProductsNav.scss';
 
 export default function ProductsNav (props) {
@@ -11,7 +12,7 @@ export default function ProductsNav (props) {
     // для проверки на вложенность третьего уровня
     const [prevCategoryProduct, setPrevCategoryProduct] = useState(null);
     // подкатегория третьего уровня
-    const [subcategoryThirdLevel, setSubcategoryThirdLevel] = useState(null);
+    const [subcategoryThirdLevel, setSubcategoryThirdLevel] = useState([]);
     /**
      *  Все перепроверить и дать нормальные имена 
      */
@@ -34,11 +35,15 @@ export default function ProductsNav (props) {
         setCategoryProducts(productsSet);
         // обнуляем значения выбраной категории
         setPrevCategoryProduct(null)
+        setSubcategoryThirdLevel([])
+
     }, [])
+        // console.log(categoryProducts)
 
     /**
      * Фильтр по категориям товаров
      * "filteredProducts" фильтрованные продукты
+     *  подкатегории/вложенность второго уровня
      */
     const filterProducts = useCallback((selectedProduct) => {
         
@@ -56,7 +61,7 @@ export default function ProductsNav (props) {
 
         setPrevCategoryProduct(selectedProduct)
         
-        // console.log("filteredProducts", filteredProducts);
+        console.log("filteredProducts", filteredProducts);
 
     }, [products])
 
@@ -72,9 +77,14 @@ export default function ProductsNav (props) {
             (item) => item.product === prevCategoryProduct && item.subcategory && item.category === elem
         );
 
-        setSubcategoryThirdLevel(filteredProducts)
-        // console.log(prevCategoryProduct)
-        // console.log('showSubcategoryThirdLevel' ,filteredProducts)
+        
+        let productsSet = new Set();
+     
+        filteredProducts?.map(elem => productsSet.add(elem.subcategory));
+
+        productsSet = [...productsSet];
+        console.log(filteredProducts)
+        setSubcategoryThirdLevel(productsSet)
     }
 
     useEffect(() => {
@@ -88,7 +98,7 @@ export default function ProductsNav (props) {
         <div className="ProductsNav">
             <p className="ProductsNav__title"> Категории товаров </p>
 
-            <ul>
+            <ul className="ProductsNav__list">
                 {categoryProducts !== null && categoryProducts.map(categoryName => (
                     /**
                      * onClick передаем в "filterProducts" имя/название категории по которой мы отфильтруем
@@ -100,6 +110,15 @@ export default function ProductsNav (props) {
                                 onClick={() => filterProducts(categoryName)} >{categoryName}</button>
                     </li>
                 ))}
+                {/* если есть 3-й уровень вложенности выводим меню */}
+                {subcategoryThirdLevel.length > 0 ? (
+                    <ul className="ProductsNav__sublist">
+                        {subcategoryThirdLevel.map(elem => (
+                            <li key={elem} > <button> {elem} </button> </li>
+                        ))}
+                    </ul>
+                ) : null }
+
                 {/* Обнуляем значения "initialCategory"  */}
                 <li><button onClick={() => initialCategory(products)} >Все категории</button></li>
             </ul>
@@ -108,3 +127,11 @@ export default function ProductsNav (props) {
         </div>
     )
 }
+
+// {subcategoryThirdLevel.length > 0 ? (
+//                             <ul className="ProductsNav__sublist">
+//                                 {subcategoryThirdLevel.map(elem => (
+//                                     <li key={elem} > <button> {elem} </button> </li>
+//                                 ))}
+//                             </ul>
+//                         ) : null }
