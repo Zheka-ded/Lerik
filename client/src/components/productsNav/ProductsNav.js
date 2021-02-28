@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-// import ProductsSubNav from '../productsSubNav/ProductsSubNav';
 import './ProductsNav.scss';
 
 export default function ProductsNav (props) {
 
     const { products } = props;
-
     // категория продуктов
     const [categoryProducts, setCategoryProducts] = useState(null);
     // категория продуктов по которой был клик
@@ -14,31 +12,34 @@ export default function ProductsNav (props) {
     // подкатегория третьего уровня
     const [subcategoryThirdLevel, setSubcategoryThirdLevel] = useState([]);
     /**
-     *  Все перепроверить и дать нормальные имена 
-     */
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    /**
      * initial category, начальные/основные категории
      * "mainProductCategories" это основные категории товаров
      */
-    const initialCategory = useCallback((mainProductCategories) => {
+    const initialCategory = useCallback((products) => {
+        /**
+         * Спасло? 
+         * https://ru.stackoverflow.com/questions/575435/%D0%98%D0%B7-%D0%BC%D0%B0%D1%81%D1%81%D0%B8%D0%B2%D0%B0-%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%D0%BE%D0%B2-javascript-%D1%81%D0%BE%D1%85%D1%80%D0%B0%D0%BD%D0%B8%D1%82%D1%8C-%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%D1%8B-%D1%81-%D0%BD%D0%B5%D0%BF%D0%BE%D0%B2%D1%82%D0%BE%D1%80%D1%8F%D1%8E%D1%89%D0%B8%D0%BC%D0%B8%D1%81%D1%8F-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F%D0%BC%D0%B8
+         * Посмотрим...
+         */
+        let category = products?.reduce((acc, prod) => {
+            if (acc.map[prod.product]) // если данный товар-категория уже был
+              return acc; // ничего не делаем, возвращаем уже собранное
         
-        // Делаем выборку уникальных значений категорий товаров
-        let productsSet = new Set();
-     
-        mainProductCategories?.map(elem => productsSet.add(elem.product));
-
-        // console.log(productsSet);
-
-        productsSet = [...productsSet];
-        // записываем значения в категорию
-        setCategoryProducts(productsSet);
-        // обнуляем значения выбраной категории
+            acc.map[prod.product] = true; // помечаем товар, как обработанный
+            acc.category.push(prod); // добавляем объект в массив товаров
+            return acc; // возвращаем собранное
+          }, {
+            map: {}, // здесь будут отмечаться обработанные товары
+            category: [] // здесь конечный массив уникальных товаров
+          })
+          .category; // получаем конечный массив
+        
+        setCategoryProducts(category);
+        // // обнуляем значения выбраной категории
         setPrevCategoryProduct(null)
         setSubcategoryThirdLevel([])
 
-    }, [])
-        // console.log(categoryProducts)
+    }, []);
 
     /**
      * Фильтр по категориям товаров
@@ -46,92 +47,107 @@ export default function ProductsNav (props) {
      *  подкатегории/вложенность второго уровня
      */
     const filterProducts = useCallback((selectedProduct) => {
-        
-        const filteredProducts = products.filter((item) => item.product === selectedProduct );
 
-        let productsSet = new Set();
-     
-        filteredProducts?.map(elem => productsSet.add(elem.category));
-
-        // console.log(productsSet);
-        productsSet = [...productsSet];
+        const filteredProducts = products.filter((item) => item.product === selectedProduct.product);
         
+        let category = filteredProducts?.reduce((acc, prod) => {
+            if (acc.map[prod.category])
+              return acc;
         
-        setCategoryProducts(productsSet)
+            acc.map[prod.category] = true;
+            acc.category.push(prod);
+            return acc;
+          }, {
+            map: {},
+            category: []
+          })
+          .category;
+        
+        setCategoryProducts(category)
 
         setPrevCategoryProduct(selectedProduct)
-        
-        console.log("filteredProducts", filteredProducts);
 
     }, [products])
 
-
     // Перебираем массив "products" и показываем товары у которых есть категория третьего уровня вложенности
-    function showSubcategoryThirdLevel (elem) {
+    function showSubcategoryThirdLevel (selectedProduct) {
         /**
          * Сравниваю элемент по которому был клик с элементом основной категории, с элементом подкатегории
          * и проверяю есть ли у него категория третьего уровня вложенности
          * setSubcategoryThirdLevel
          */
         const filteredProducts = products.filter(
-            (item) => item.product === prevCategoryProduct && item.subcategory && item.category === elem
+            (item) => item.product === prevCategoryProduct.product && item.subcategory && item.category === selectedProduct.category
         );
-
         
-        let productsSet = new Set();
-     
-        filteredProducts?.map(elem => productsSet.add(elem.subcategory));
+        let category = filteredProducts?.reduce((acc, prod) => {
+            if (acc.map[prod.subcategory])
+              return acc;
+        
+            acc.map[prod.subcategory] = true;
+            acc.category.push(prod);
+            return acc;
+          }, {
+            map: {},
+            category: []
+          })
+          .category
 
-        productsSet = [...productsSet];
-        console.log(filteredProducts)
-        setSubcategoryThirdLevel(productsSet)
+        setSubcategoryThirdLevel(category);
+
+    }
+    // Закрываем подменю третей категории
+    function closeSubcategoryThirdLevel () {
+        setSubcategoryThirdLevel([])
     }
 
     useEffect(() => {
         initialCategory(products)
     },[initialCategory, products])
 
-    console.log("categoryProducts", categoryProducts);
-    console.log('subcategoryThirdLevel', subcategoryThirdLevel);
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     return (
         <div className="ProductsNav">
             <p className="ProductsNav__title"> Категории товаров </p>
 
             <ul className="ProductsNav__list">
-                {categoryProducts !== null && categoryProducts.map(categoryName => (
+                
+                {categoryProducts !== null && categoryProducts?.map(categoryName => (
                     /**
                      * onClick передаем в "filterProducts" имя/название категории по которой мы отфильтруем
                      * нужные нам товары
                      * onMouseEnter/onMouseMoveCapture если выбрана подкатегория "prevCategoryProduct" то показываем подменю
                      */
-                    <li key={categoryName} >
-                        <button onMouseEnter={() => prevCategoryProduct !== null ? showSubcategoryThirdLevel(categoryName) : null }
-                                onClick={() => filterProducts(categoryName)} >{categoryName}</button>
-                    </li>
+                    prevCategoryProduct === null ? (
+                        <li key={categoryName._id} >
+                            <button onClick={() => filterProducts(categoryName)} >{categoryName.product}</button>
+                        </li>
+                    ) : (
+                        // если есть 3-й уровень вложенности выводим меню
+                        categoryName.subcategory ? (
+                            <li key={categoryName._id} className="ProductsNav__subCategory">
+                                <button onMouseEnter={() => showSubcategoryThirdLevel(categoryName)} >{categoryName.category}</button>
+                            {/* Если совпадают имена категорий то выводим меню третьего уровня нужной нам категории */}
+                            {categoryName.category === subcategoryThirdLevel[0]?.category && (
+                                <ul className="ProductsNav__sublist"  onMouseLeave={closeSubcategoryThirdLevel} >
+                                    {subcategoryThirdLevel.map(elem => (
+                                        <li key={[elem.__id,elem.title,elem.subcategory]}> <button> {elem.subcategory} </button> </li>
+                                    ))}
+                                </ul>
+                            )}
+                            </li>
+                        ) : (
+                            <li key={categoryName._id} onMouseEnter={closeSubcategoryThirdLevel} >
+                                <button>{categoryName.category}</button>
+                            </li>
+                        )
+                    )
                 ))}
-                {/* если есть 3-й уровень вложенности выводим меню */}
-                {subcategoryThirdLevel.length > 0 ? (
-                    <ul className="ProductsNav__sublist">
-                        {subcategoryThirdLevel.map(elem => (
-                            <li key={elem} > <button> {elem} </button> </li>
-                        ))}
-                    </ul>
-                ) : null }
-
-                {/* Обнуляем значения "initialCategory"  */}
-                <li><button onClick={() => initialCategory(products)} >Все категории</button></li>
+                <li onMouseEnter={closeSubcategoryThirdLevel} >
+                    {/* Обнуляем значения "initialCategory"  */}
+                    <button onClick={() => initialCategory(products)} >Все категории</button>
+                </li>
             </ul>
-
 
         </div>
     )
 }
-
-// {subcategoryThirdLevel.length > 0 ? (
-//                             <ul className="ProductsNav__sublist">
-//                                 {subcategoryThirdLevel.map(elem => (
-//                                     <li key={elem} > <button> {elem} </button> </li>
-//                                 ))}
-//                             </ul>
-//                         ) : null }
