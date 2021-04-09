@@ -1,7 +1,5 @@
 .Nav{
-    // margin-left: -10px;
-    // margin-right: -10px;
-
+    
     ul{
         display: flex;
         flex-direction: row;
@@ -16,13 +14,11 @@
                 position: relative;
                 display: inline-block;
                 text-decoration: none;
-                // background-color: #d1c4e9;
-                background-color: #7e57c2;
-                background-color: #212121;
                 background-color: #263238;
                 color: #fff;
                 padding: 10px 20px;
                 border-radius: 5px;
+                white-space: nowrap;
                 overflow: hidden;
                 
                 &:before{
@@ -34,7 +30,6 @@
                     height: 100%;
                     background-color: rgba(253,253,253, 0.8);
                     filter: blur(10px);
-                    // transform: translateX(-175%) skewX(-45deg);
                     transform: skewX(-45deg);
                 }
                     

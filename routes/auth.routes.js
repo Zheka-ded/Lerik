@@ -17,7 +17,7 @@ router.post(
     ],
     async (req, res) => {
     try {
-
+        // console.log('body:', req.body)
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -66,7 +66,6 @@ router.post(
     async (req, res) => {
     try {
         const errors = validationResult(req);
-        console.log(errors)
 
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -80,7 +79,7 @@ router.post(
         const isMatchName = await Admin.findOne(({ name }));
 
         if(!isMatchName) {
-            return res.status(400).json({ message: 'Имя не правильно' });
+            return res.status(400).json({ message: 'Имя не правильно'});
         }
 
         const admin = await Admin.findOne({ email });

@@ -1,20 +1,25 @@
 import {BrowserRouter as Router} from 'react-router-dom';
-import useRoutes from '../../routes';
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 import { useState } from 'react';
-import useHttp from '../../hooks/http.hook';
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-import './App.scss';
-
+import { useRoutes } from '../../routes';
+import { useHttp } from '../../hooks/http.hook';
+import { useAuth } from '../../hooks/auth.hook';
+import { AuthContext } from '../context/AuthContext';
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 import Nav from '../nav/Nav';
 import Logo from '../logo/Logo';
 import ProductsNav from '../productsNav/ProductsNav';
 
+import './App.scss';
 
-export default function Appp () {
-    
-    const routes = useRoutes(true)
+
+
+export default function App () {
+
+    const {token, login, logout, adminId} = useAuth();
+    const isAuthenticated = !!token;
+    const routes = useRoutes(isAuthenticated);
+
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     const { request } = useHttp();
@@ -36,19 +41,23 @@ export default function Appp () {
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     return (
-        <Router>
-            <div className="App">
-                <div className="App__wrap">
-                    <div className="App__top">
-                        <Logo/>
-                        <Nav/>
-                    </div>
-                    <div className="App__center">
-                        <ProductsNav products={products} />
-                        {routes}
+        <AuthContext.Provider value={{
+            token, login, logout, adminId, isAuthenticated
+        }}>
+            <Router>
+                <div className="App">
+                    <div className="App__wrap">
+                        <div className="App__top">
+                            <Logo/>
+                            <Nav/>
+                        </div>
+                        <div className="App__center">
+                            <ProductsNav products={products} />
+                            {routes}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </Router>
+            </Router>
+        </AuthContext.Provider>
     )
 }

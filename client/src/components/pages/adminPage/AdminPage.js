@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import useHttp from '../../../hooks/http.hook';
+import { useHttp } from '../../../hooks/http.hook';
 
 import './AdminPage.scss';
 

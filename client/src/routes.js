@@ -9,8 +9,12 @@ import DimensionPage from './components/pages/dimensionPage/DimensionPage';
 import ArticlesPage from './components/pages/articlesPage/ArticlesPage';
 import ContactsPage from './components/pages/contactsPage/ContactsPage';
 
-export default function useRoutes (isAuthenticated) {
-    if (isAuthenticated){
+
+
+export const useRoutes = isAuthenticated => {
+    
+    if (isAuthenticated) {
+        
         return (
             <Switch>
                 
@@ -50,7 +54,8 @@ export default function useRoutes (isAuthenticated) {
                     <AdminPage />
                 </Route>
                 
-                <Redirect to="/" />
+                {/* <Redirect to="/" /> */}
+                <Redirect to="/admin" />
 
             </Switch>
         )
@@ -95,11 +100,3 @@ export default function useRoutes (isAuthenticated) {
         </Switch>
     )
 }
-
-
-
-
-
-// export default function useRoutes () {
-
-// }
