@@ -5,6 +5,7 @@ import { useRoutes } from '../../routes';
 import { useHttp } from '../../hooks/http.hook';
 import { useAuth } from '../../hooks/auth.hook';
 import { AuthContext } from '../context/AuthContext';
+import { ProductsContext } from '../context/ProductsContext'
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 import Nav from '../nav/Nav';
 import Logo from '../logo/Logo';
@@ -25,6 +26,8 @@ export default function App () {
     const { request } = useHttp();
 
     const [products, setProducts] = useState(null);
+    const [selectProducts, setSelectProducts] = useState(null);
+    const [selectedCategoryName, setSelectedCategoryName] = useState(null);
 
     async function allProducts () {
         try {
@@ -41,23 +44,23 @@ export default function App () {
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     return (
-        <AuthContext.Provider value={{
-            token, login, logout, adminId, isAuthenticated
-        }}>
-            <Router>
-                <div className="App">
-                    <div className="App__wrap">
-                        <div className="App__top">
-                            <Logo/>
-                            <Nav/>
-                        </div>
-                        <div className="App__center">
-                            <ProductsNav products={products} />
-                            {routes}
+        <ProductsContext.Provider value = {{ products, selectProducts, setSelectProducts, selectedCategoryName, setSelectedCategoryName}}>
+            <AuthContext.Provider value={{ token, login, logout, adminId, isAuthenticated }}>
+                <Router>
+                    <div className="App">
+                        <div className="App__wrap">
+                            <div className="App__top">
+                                <Logo/>
+                                <Nav/>
+                            </div>
+                            <div className="App__center">
+                                <ProductsNav />
+                                {routes}
+                            </div>
                         </div>
                     </div>
-                </div>
-            </Router>
-        </AuthContext.Provider>
+                </Router>
+            </AuthContext.Provider>
+        </ProductsContext.Provider>
     )
 }

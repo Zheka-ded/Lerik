@@ -1,9 +1,11 @@
 .App{
-    max-width: 1250px;
+    // TODO: check width
+    // max-width: 1250px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     margin: 0 auto;
+    padding: 0px 32px;
     color: #607d8b;
     &__wrap{
         display: flex;
@@ -27,6 +29,6 @@
         display: flex;
         flex-direction: row;
         // !!!!!!!!!!!!!!!!!!!!!!!!
-        justify-content: space-around;
+        justify-content: space-between;
     }
 }

@@ -1,9 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { ProductsContext } from '../context/ProductsContext'
+
 import './ProductsNav.scss';
 
-export default function ProductsNav (props) {
+export default function ProductsNav () {
 
-    const { products } = props;
+    const { products, setSelectProducts, setSelectedCategoryName } = useContext(ProductsContext);
+    // const [productList, setProductList] = useState(null);
     // категория продуктов
     const [categoryProducts, setCategoryProducts] = useState(null);
     // категория продуктов по которой был клик
@@ -35,11 +38,14 @@ export default function ProductsNav (props) {
           .category; // получаем конечный массив
         
         setCategoryProducts(category);
+        // console.log(category)
         // // обнуляем значения выбраной категории
         setPrevCategoryProduct(null)
         setSubcategoryThirdLevel([])
+        setSelectedCategoryName('Все категории')
+        setSelectProducts(products)
 
-    }, []);
+    }, [setSelectProducts, setSelectedCategoryName]);
 
     /**
      * Фильтр по категориям товаров
@@ -49,6 +55,7 @@ export default function ProductsNav (props) {
     const filterProducts = useCallback((selectedProduct) => {
 
         const filteredProducts = products.filter((item) => item.product === selectedProduct.product);
+        // console.log('смотрим что покажет', filteredProducts)
         
         let category = filteredProducts?.reduce((acc, prod) => {
             if (acc.map[prod.category])
@@ -64,8 +71,10 @@ export default function ProductsNav (props) {
           .category;
         
         setCategoryProducts(category)
+        // console.log(category)
 
         setPrevCategoryProduct(selectedProduct)
+
 
     }, [products])
 
@@ -79,6 +88,7 @@ export default function ProductsNav (props) {
         const filteredProducts = products.filter(
             (item) => item.product === prevCategoryProduct.product && item.subcategory && item.category === selectedProduct.category
         );
+        // console.log('смотрим что покажет', filteredProducts)
         
         let category = filteredProducts?.reduce((acc, prod) => {
             if (acc.map[prod.subcategory])
@@ -94,6 +104,7 @@ export default function ProductsNav (props) {
           .category
 
         setSubcategoryThirdLevel(category);
+        // console.log(category)
 
     }
     // Закрываем подменю третей категории
@@ -101,10 +112,54 @@ export default function ProductsNav (props) {
         setSubcategoryThirdLevel([])
     }
 
+    function showProduct(item){
+
+        // console.log(products)
+
+        const prod = products.filter((elem) => elem.product === item);
+
+        console.log('prod ',prod)
+        console.log('item ', item)
+        // setProductList(prod)
+        // console.log(productList)
+        setSelectedCategoryName(item)
+        setSelectProducts(prod)
+    }
+
+    
+    function showCategory(item){
+
+        // console.log(products)
+
+        const prod = products.filter((elem) => elem.category === item);
+
+        console.log('category ',prod)
+        console.log('item ', item)
+        // setProductList(prod)
+        // console.log(productList)
+        setSelectedCategoryName(item)
+        setSelectProducts(prod)
+    }
+    function showSubCategory(item){
+
+        // console.log(products)
+
+        const prod = products.filter((elem) => elem.subcategory === item);
+
+        console.log('subcategory ',prod)
+        console.log('item ', item)
+        // setProductList(prod)
+        // console.log(productList)
+        setSelectedCategoryName(item)
+        setSelectProducts(prod)
+    }
+
     useEffect(() => {
         initialCategory(products)
     },[initialCategory, products])
 
+
+    // console.log(productList)
     return (
         <div className="ProductsNav">
             <p className="ProductsNav__title"> Категории товаров </p>
@@ -119,25 +174,27 @@ export default function ProductsNav (props) {
                      */
                     prevCategoryProduct === null ? (
                         <li key={categoryName._id} >
-                            <button onClick={() => filterProducts(categoryName)} >{categoryName.product}</button>
+                            <button onClick={() => {
+                                showProduct(categoryName.product)
+                                filterProducts(categoryName)}} >{categoryName.product}</button>
                         </li>
                     ) : (
                         // если есть 3-й уровень вложенности выводим меню
                         categoryName.subcategory ? (
                             <li key={categoryName._id} className="ProductsNav__subCategory">
-                                <button onMouseEnter={() => showSubcategoryThirdLevel(categoryName)} >{categoryName.category}</button>
+                                <button onClick={() => showCategory(categoryName.category)} onMouseEnter={() => showSubcategoryThirdLevel(categoryName)} >{categoryName.category}</button>
                             {/* Если совпадают имена категорий то выводим меню третьего уровня нужной нам категории */}
                             {categoryName.category === subcategoryThirdLevel[0]?.category && (
                                 <ul className="ProductsNav__sublist"  onMouseLeave={closeSubcategoryThirdLevel} >
                                     {subcategoryThirdLevel.map(elem => (
-                                        <li key={[elem.__id,elem.title,elem.subcategory]}> <button> {elem.subcategory} </button> </li>
+                                        <li key={[elem.__id,elem.title,elem.subcategory]}> <button onClick={() => showSubCategory(elem.subcategory)}> {elem.subcategory} </button> </li>
                                     ))}
                                 </ul>
                             )}
                             </li>
                         ) : (
                             <li key={categoryName._id} onMouseEnter={closeSubcategoryThirdLevel} >
-                                <button>{categoryName.category}</button>
+                                <button onClick={() => showCategory(categoryName.category)}>{categoryName.category}</button>
                             </li>
                         )
                     )
