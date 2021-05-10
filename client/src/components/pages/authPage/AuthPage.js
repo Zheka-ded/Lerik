@@ -71,8 +71,8 @@ export default function AuthPage () {
                     <input type="password" name="password" placeholder="Пароль" onChange={changeHandler} />
                     <button type="submit" onClick={loginHandler} disabled={loading} >Вход</button>
                     {auth.isAuthenticated && <>
-                        <button type="submit" onClick={logoutHandler} disabled={loading} >Выход</button>
                         <button type="submit" onClick={registerHandler} disabled={loading} >Регистрация</button>
+                        <button type="submit" onClick={logoutHandler} disabled={loading} >Выход</button>
                     </>}
                 </form>
             </div>

@@ -1,59 +1,165 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext, useCallback} from 'react';
 import { useHttp } from '../../../hooks/http.hook';
+import { ProductsContext } from '../../context/ProductsContext';
 
 import './AdminPage.scss';
 
 export default function AdminPage () {
 
+    const { category, showCategory, subCategory, showSubCategory, products, showProducts, subProducts, showSubProducts } = useContext(ProductsContext);
+
     const { loading, request, error } = useHttp();
 
-    const [form, setForm] = useState({
-        'product': '', 'category':'', 'subcategory':'', 'title': '', 'cod': '', 'price': '', 'sale': '', 'img': [], 'description': [],
-    });
+    const [categoryName, setCategoryName] = useState({
+        'title': ''
+    })
 
+    const [subCategoryName, setSubCategoryName] = useState({
+        'title': ''
+    })
+
+    const [product, setProduct] = useState({
+        'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'img': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
+    })
     
-    console.log(form)
-
-    useEffect(() => {
-
-    }, [error])
-    // }, [])
-
+    const [subProduct, setSubProduct] = useState({
+        'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'img': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
+    })
     
 
-    function changeHandler (e) {
-        setForm({ ...form, [e.target.name]: e.target.value });
+    function changeHandlerCategory (e) {
+        setCategoryName({ ...categoryName, [e.target.name]: e.target.value });
     }
 
-    async function createProduct (e) {
+    
+    async function createCategory (e) {
         // e.preventDefault();
         try {
-            const data = await request('/api/product/create', 'POST', {...form});
+            const data = await request('/api/category/createCategory', 'POST', {...categoryName});
             console.log('Data', data)
-            console.log(form)
+            console.log(categoryName)
+            showCategory()
+        } catch (e) {
+
+        }
+    }
+    
+
+    function changeHandlerSubCategory (e) {
+        setSubCategoryName({ ...subCategoryName, [e.target.name]: e.target.value });
+    }
+
+    
+    async function createSubCategory (e) {
+        // e.preventDefault();
+        try {
+            const data = await request('/api/subCategory/createSubCategory', 'POST', {...subCategoryName});
+            console.log('Data', data)
+            console.log(subCategoryName)
+            showSubCategory()
         } catch (e) {
 
         }
     }
 
+
+    function changeHandlerProduct (e) {
+        setProduct({ ...product, [e.target.name]: e.target.value})
+    }
+
+    async function createProduct (e) {
+        // e.preventDefault();
+        try {
+            const data = await request('/api/products/createProduct', 'POST', {...product});
+            console.log('Data', data)
+            console.log(product)
+            showProducts()
+        } catch (e) {
+
+        }
+    }
+
+    function changeHandlerSubProduct (e) {
+        setSubProduct({ ...subProduct, [e.target.name]: e.target.value})
+    }
+
+    async function createSubProduct (e) {
+        // e.preventDefault();
+        try {
+            const data = await request('/api/subProducts/createSubProduct', 'POST', {...subProduct});
+            console.log('Data', data)
+            console.log('SUBProduct', subProduct)
+        } catch (e) {
+
+        }
+    }
+
+    
+    useEffect(() => {
+        
+    }, [error])
+
     return (
         <div className="AdminPage">
-            <h1>Заполняем</h1>
+            {/* <h1>Заполняем</h1> */}
             <div className="AdminPage__form-wrap">
+
                 <form>
-                    <input type="text" name="product" placeholder="Наименование" onChange={changeHandler} />
-                    <input type="text" name="category" placeholder="Категория" onChange={changeHandler} />
-                    <input type="text" name="subcategory" placeholder="Подкатегория" onChange={changeHandler} />
-                    <input type="text" name="title" placeholder="Название" onChange={changeHandler} />
-                    <input type="text" name="cod" placeholder="Код/Артикул" onChange={changeHandler} />
-                    <input type="number" name="price" placeholder="Цена" onChange={changeHandler} />
-                    <input type="number" name="sale" placeholder="Скидка" onChange={changeHandler} />
-                    <input type="text" name="img" placeholder="Ссылки картинкам" onChange={changeHandler} />
-                    <input type="text" name="description" placeholder="Описание" onChange={changeHandler} />
-                    {/* <button type="submit" onClick={loginHandler} disabled={loading} >Сбросить все</button> */}
-                    <button type="submit" onClick={createProduct} disabled={loading} >Добавить</button>
-                    {/* <button type="submit" onClick={createProduct}>Добавить</button> */}
+                    <h1> Название категории </h1>
+                    <input type="text" name="title" placeholder="Основная категория" onChange={changeHandlerCategory} />
+                    <button type="submit" onClick={createCategory} disabled={loading} >Добавить категорию</button>
                 </form>
+
+                <form>
+                    <h1> Название подкатегории </h1>
+                    <input type="text" name="title" placeholder="Подкатегория" onChange={changeHandlerSubCategory} />
+                    <select name="parent" id="" onChange={changeHandlerSubCategory}>
+                        <option value="default">Выберите подкатегорию</option>
+                        {category !== null && category?.map(elem => (
+                            <option key={elem._id} value={elem._id}>{elem.title}</option>
+                        ))}
+                    </select>
+                    <button type="submit" onClick={createSubCategory} disabled={loading} >Добавить подкатегорию</button>
+                </form>
+                
+                <form>
+                    <h1> Описание товара </h1>
+                    <select name="parent" id="" onChange={changeHandlerProduct}>
+                        <option value="default">Выберите категорию</option>
+                        {subCategory !== null && subCategory?.map(elem => (
+                            <option key={elem._id} value={elem._id}>{elem.title}</option>
+                        ))}
+                    </select>
+
+                    <input type="text" name="title" placeholder="title" onChange={changeHandlerProduct} />
+                    <input type="text" name="cod" placeholder="cod" onChange={changeHandlerProduct} />
+                    <input type="text" name="price" placeholder="price" onChange={changeHandlerProduct} />
+                    <input type="number" name="sale" placeholder="sale" onChange={changeHandlerProduct} />
+                    <input type="text" name="img" placeholder="img" onChange={changeHandlerProduct} />
+                    <input type="text" name="description" placeholder="description" onChange={changeHandlerProduct} />
+                    <button type="submit" onClick={createProduct} disabled={loading} >Добавить товар</button>
+                </form>
+
+                
+                <form>
+                    <h1> Описание подтовара </h1>
+
+                    <select name="parent" id="" onChange={changeHandlerSubProduct}>
+                        <option value="default">Выберите товар</option>
+                        {products !== null && products?.map(elem => (
+                            <option key={elem._id} value={elem._id}>{elem.title}</option>
+                        ))}
+                    </select>
+
+                    <input type="text" name="title" placeholder="title" onChange={changeHandlerSubProduct} />
+                    <input type="text" name="cod" placeholder="cod" onChange={changeHandlerSubProduct} />
+                    <input type="text" name="price" placeholder="price" onChange={changeHandlerSubProduct} />
+                    <input type="number" name="sale" placeholder="sale" onChange={changeHandlerSubProduct} />
+                    <input type="text" name="img" placeholder="img" onChange={changeHandlerSubProduct} />
+                    <input type="text" name="description" placeholder="description" onChange={changeHandlerSubProduct} />
+                    <button type="submit" onClick={createSubProduct} disabled={loading} >Добавить товар</button>
+                </form>
+
             </div>
         </div>
     )

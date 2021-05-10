@@ -25,26 +25,67 @@ export default function App () {
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     const { request } = useHttp();
 
+    const [category, setCategory] = useState(null);
+    const [subCategory, setSubCategory] = useState(null);
     const [products, setProducts] = useState(null);
-    const [selectProducts, setSelectProducts] = useState(null);
-    const [selectedCategoryName, setSelectedCategoryName] = useState(null);
+    const [subProducts, setSubProducts] = useState(null);
+    
 
-    async function allProducts () {
+    async function showCategory () {
         try {
-            const fetched = await request('/api/product/loading', 'GET', null);
+            const fetched = await request('/api/category/loading', 'GET', null);
+            // console.log('Category' ,fetched)
+            setCategory(fetched);
+        } catch (e) {
+            
+        }
+    }
+
+    async function showSubCategory () {
+        try {
+            const fetched = await request('/api/subCategory/loading', 'GET', null);
+            // console.log('SUBCategory', fetched)
+            setSubCategory(fetched);
+        } catch (e) {
+            
+        }
+    }
+
+    async function showProducts () {
+        try {
+            const fetched = await request('/api/products/loading', 'GET', null);
+            // console.log('Products', fetched)
             setProducts(fetched);
         } catch (e) {
             
         }
     }
+
+    async function showSubProducts () {
+        try {
+            const fetched = await request('/api/subProducts/loading', 'GET', null);
+            // console.log('SUBProducts', fetched)
+            setSubProducts(fetched);
+        } catch (e) {
+            
+        }
+    }
+
     // Не правильно тут
     useState(() => {
-        allProducts()
-    }, [allProducts])
+        showCategory()
+        showSubCategory()
+        showProducts()
+        showSubProducts()
+    }, [showCategory, showSubCategory, showProducts, showSubProducts])
+
+    // console.log(baseCategory)
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     return (
-        <ProductsContext.Provider value = {{ products, selectProducts, setSelectProducts, selectedCategoryName, setSelectedCategoryName}}>
+        <ProductsContext.Provider value = {{ category, showCategory, subCategory, showSubCategory, 
+                                            products, showProducts, subProducts, showSubProducts }}>
+
             <AuthContext.Provider value={{ token, login, logout, adminId, isAuthenticated }}>
                 <Router>
                     <div className="App">
