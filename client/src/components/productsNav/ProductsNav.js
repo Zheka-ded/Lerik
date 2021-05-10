@@ -5,23 +5,12 @@ import './ProductsNav.scss';
 
 export default function ProductsNav () {
 
-    const { category, subCategory, products, subProducts } = useContext(ProductsContext);
+    const { category, subCategory} = useContext(ProductsContext);
     
     const [categoryProducts, setCategoryProducts] = useState(null);
-    
-    const [selectedProducts, setSelectedProducts] = useState(null);
-    // подкатегория третьего уровня
-    // const [subcategoryThirdLevel, setSubcategoryThirdLevel] = useState([]);
-    /**
-     * initial category, начальные/основные категории
-     * "mainProductCategories" это основные категории товаров
-     */
-
-    // console.log(baseCategory)
 
     const initialCategory = useCallback((category) => {
         setCategoryProducts(category)
-        // console.log(categoryProducts)
     }, []);
 
     const showShota = (shota) => {

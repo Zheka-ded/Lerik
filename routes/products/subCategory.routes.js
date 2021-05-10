@@ -34,7 +34,6 @@ router.post(
     
             const newSubCategoryName = new SubCategory({ title, parent });
 
-            
             await Category.update({_id: parent},{ $push: {
                 child: await newSubCategoryName.save()
             }})

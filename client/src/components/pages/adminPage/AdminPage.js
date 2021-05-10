@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext, useCallback} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import { useHttp } from '../../../hooks/http.hook';
 import { ProductsContext } from '../../context/ProductsContext';
 
@@ -6,7 +6,7 @@ import './AdminPage.scss';
 
 export default function AdminPage () {
 
-    const { category, showCategory, subCategory, showSubCategory, products, showProducts, subProducts, showSubProducts } = useContext(ProductsContext);
+    const { category, showCategory, subCategory, showSubCategory, products, showProducts } = useContext(ProductsContext);
 
     const { loading, request, error } = useHttp();
 
@@ -37,7 +37,7 @@ export default function AdminPage () {
         try {
             const data = await request('/api/category/createCategory', 'POST', {...categoryName});
             console.log('Data', data)
-            console.log(categoryName)
+            console.log('categoryName', categoryName)
             showCategory()
         } catch (e) {
 
@@ -55,7 +55,7 @@ export default function AdminPage () {
         try {
             const data = await request('/api/subCategory/createSubCategory', 'POST', {...subCategoryName});
             console.log('Data', data)
-            console.log(subCategoryName)
+            console.log('subCategoryName', subCategoryName)
             showSubCategory()
         } catch (e) {
 
@@ -72,7 +72,7 @@ export default function AdminPage () {
         try {
             const data = await request('/api/products/createProduct', 'POST', {...product});
             console.log('Data', data)
-            console.log(product)
+            console.log('product', product)
             showProducts()
         } catch (e) {
 
@@ -100,17 +100,16 @@ export default function AdminPage () {
 
     return (
         <div className="AdminPage">
-            {/* <h1>Заполняем</h1> */}
             <div className="AdminPage__form-wrap">
 
                 <form>
-                    <h1> Название категории </h1>
+                    <h3> Название категории </h3>
                     <input type="text" name="title" placeholder="Основная категория" onChange={changeHandlerCategory} />
                     <button type="submit" onClick={createCategory} disabled={loading} >Добавить категорию</button>
                 </form>
 
                 <form>
-                    <h1> Название подкатегории </h1>
+                    <h3> Название подкатегории </h3>
                     <select name="parent" id="" onChange={changeHandlerSubCategory}>
                         <option value="default">Выберите категорию</option>
                         {category !== null && category?.map(elem => (
@@ -121,8 +120,8 @@ export default function AdminPage () {
                     <button type="submit" onClick={createSubCategory} disabled={loading} >Добавить подкатегорию</button>
                 </form>
                 
-                <form>
-                    <h1> Описание товара </h1>
+                <form encType="multipart/form-data">
+                    <h3> Описание товара </h3>
                     <select name="parent" id="" onChange={changeHandlerProduct}>
                         <option value="default">Выберите категорию</option>
                         {subCategory !== null && subCategory?.map(elem => (
@@ -140,8 +139,8 @@ export default function AdminPage () {
                 </form>
 
                 
-                <form>
-                    <h1> Описание подтовара </h1>
+                <form encType="multipart/form-data">
+                    <h3> Описание подтовара </h3>
 
                     <select name="parent" id="" onChange={changeHandlerSubProduct}>
                         <option value="default">Выберите товар</option>
