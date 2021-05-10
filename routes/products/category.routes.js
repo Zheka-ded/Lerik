@@ -3,8 +3,6 @@ const Category = require('../../models/products/Category');
 const {check, validationResult} = require('express-validator');
 const router = Router();
 
-// createBaseCategory
-
 router.post(
     '/createCategory',
     [

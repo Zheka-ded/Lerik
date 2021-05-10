@@ -93,7 +93,6 @@ export default function AdminPage () {
 
         }
     }
-
     
     useEffect(() => {
         
@@ -112,13 +111,13 @@ export default function AdminPage () {
 
                 <form>
                     <h1> Название подкатегории </h1>
-                    <input type="text" name="title" placeholder="Подкатегория" onChange={changeHandlerSubCategory} />
                     <select name="parent" id="" onChange={changeHandlerSubCategory}>
-                        <option value="default">Выберите подкатегорию</option>
+                        <option value="default">Выберите категорию</option>
                         {category !== null && category?.map(elem => (
                             <option key={elem._id} value={elem._id}>{elem.title}</option>
                         ))}
                     </select>
+                    <input type="text" name="title" placeholder="Название подкатегории" onChange={changeHandlerSubCategory} />
                     <button type="submit" onClick={createSubCategory} disabled={loading} >Добавить подкатегорию</button>
                 </form>
                 

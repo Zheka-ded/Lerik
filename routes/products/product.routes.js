@@ -1,4 +1,5 @@
 const {Router} = require('express');
+const SubCategory = require('../../models/products/SubCategory');
 const Product = require('../../models/products/Product');
 const {check, validationResult} = require('express-validator');
 const router = Router();
@@ -37,7 +38,12 @@ router.post(
 
             const newProduct = new Product({ parent, title, cod, price, sale, img, description, date });
 
-            await newProduct.save();
+            
+            await SubCategory.update({_id: parent},{ $push: {
+                child: await newProduct.save()
+            }})
+
+            
     
             res.status(201).json({ message: 'Товар создан' });
     

@@ -1,9 +1,10 @@
 const {Router} = require('express');
 const SubCategory = require('../../models/products/SubCategory');
+const Category = require('../../models/products/Category');
 const {check, validationResult} = require('express-validator');
 const router = Router();
 
-// createBaseCategory
+
 
 router.post(
     '/createSubCategory',
@@ -26,14 +27,17 @@ router.post(
             const { title, parent } = req.body;
     
             const subCategoryName = await SubCategory.findOne({ title });
-    
+
             if (subCategoryName) {
                 return res.status(400).json({ message: 'Такая подкатегория существует' });
             };
-
+    
             const newSubCategoryName = new SubCategory({ title, parent });
 
-            await newSubCategoryName.save();
+            
+            await Category.update({_id: parent},{ $push: {
+                child: await newSubCategoryName.save()
+            }})
     
             res.status(201).json({ message: 'Подкатегория создана' });
     
