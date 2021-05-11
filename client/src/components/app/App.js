@@ -29,7 +29,6 @@ export default function App () {
     const [subCategory, setSubCategory] = useState(null);
     const [products, setProducts] = useState(null);
     const [subProducts, setSubProducts] = useState(null);
-    
 
     async function showCategory () {
         try {

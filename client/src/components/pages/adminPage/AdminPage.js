@@ -133,7 +133,8 @@ export default function AdminPage () {
                     <input type="text" name="cod" placeholder="cod" onChange={changeHandlerProduct} />
                     <input type="text" name="price" placeholder="price" onChange={changeHandlerProduct} />
                     <input type="number" name="sale" placeholder="sale" onChange={changeHandlerProduct} />
-                    <input type="text" name="img" placeholder="img" onChange={changeHandlerProduct} />
+                    {/* <input type="text" name="img" placeholder="img" onChange={changeHandlerProduct} /> */}
+                    <input type="file" name="img" placeholder="img" onChange={changeHandlerProduct} />
                     <input type="text" name="description" placeholder="description" onChange={changeHandlerProduct} />
                     <button type="submit" onClick={createProduct} disabled={loading} >Добавить товар</button>
                 </form>
@@ -153,7 +154,8 @@ export default function AdminPage () {
                     <input type="text" name="cod" placeholder="cod" onChange={changeHandlerSubProduct} />
                     <input type="text" name="price" placeholder="price" onChange={changeHandlerSubProduct} />
                     <input type="number" name="sale" placeholder="sale" onChange={changeHandlerSubProduct} />
-                    <input type="text" name="img" placeholder="img" onChange={changeHandlerSubProduct} />
+                    {/* <input type="text" name="img" placeholder="img" onChange={changeHandlerSubProduct} /> */}
+                    <input type="file" name="img" placeholder="img" onChange={changeHandlerSubProduct} />
                     <input type="text" name="description" placeholder="description" onChange={changeHandlerSubProduct} />
                     <button type="submit" onClick={createSubProduct} disabled={loading} >Добавить товар</button>
                 </form>
