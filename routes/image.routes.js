@@ -1,26 +1,54 @@
 const {Router} = require('express');
 const Image = require('../models/Image');
-const upload = require('../middleware/uploadNew');
+// const upload = require('../middleware/uploadNew');
 // const upload = require('../middleware/upload');
 const router = Router();
 
 
-router.post('/saveImage', upload, async (req, res) => {
+router.post('/saveImage', async (req, res) => {
+    try {
+      if(!req.files){
+        res.send({
+          status: false,
+          message: "No files"
+        })
+      } else {
+        const {imageSrc} = req.files
 
-        const newImage = new Image({
-            imageSrc: req.file ? req.file.path : '911'
-        });
+        if (imageSrc.mimetype === 'image/png' || imageSrc.mimetype === 'image/jpeg' || imageSrc.mimetype === 'image/jpg') {
 
-        try {
-            await newImage.save()
-
-            res.status(201).json({ message: 'Image save' });
+            const date = new Date().toLocaleString('ua-UA').split('').filter(el => !isNaN(el) && el !== ' ').join('')
     
-        } catch (e) {
-            res.status(500).json({message: 'Image save error'});
-        }
-    }
-)
+            let r = imageSrc
+    
+            imageSrc.mv(`./uploads/${imageSrc.name}/${date}-${Date.now()}-${imageSrc.name}`)
 
+            const newImage = new Image({
+                path: `./uploads/${imageSrc.name}`,
+                imageSrc: `${date}-${Date.now()}-${imageSrc.name}`,
+                name: imageSrc.name
+            });
+
+            await newImage.save()
+      
+            res.send({
+              status: true,
+              message: "File is uploaded",
+              file: r
+            })
+
+        } else {
+
+            res.send({
+                status: false,
+                message: "This is not a picture",
+                name: imageSrc.name
+            })
+        }
+      }
+    } catch (e) {
+      res.status(500).send(e)
+    }
+})
 
 module.exports = router;

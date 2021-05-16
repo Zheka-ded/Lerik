@@ -1,8 +1,9 @@
 const {Schema, model, Types} = require('mongoose');
 
 const imageSchema = new Schema ({
-    // src: {type: String, required: true, unique: true},
-    // src: {type: String, required: true},
+    parent: {type: String,},
+    path: {type: String,},
+    name: {type: String,},
     imageSrc: {type: String},
 })
 
