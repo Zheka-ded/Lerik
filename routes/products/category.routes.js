@@ -1,6 +1,6 @@
 const {Router} = require('express');
-const Category = require('../../models/products/Category');
 const {check, validationResult} = require('express-validator');
+const Category = require('../../models/products/Category');
 const router = Router();
 
 router.post(

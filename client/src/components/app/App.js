@@ -21,7 +21,6 @@ export default function App () {
     const isAuthenticated = !!token;
     const routes = useRoutes(isAuthenticated);
 
-
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     const { request } = useHttp();
 

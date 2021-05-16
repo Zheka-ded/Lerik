@@ -8,11 +8,14 @@ const storage = multer.diskStorage({
     filename(req, file, cb){
         const date = new Date().toLocaleString('ua-UA').split('').filter(el => !isNaN(el) && el !== ' ').join('')
         cb(null, `${date}-${file.originalname}`)
+        cb(null, `${file.originalname}`)
     }
 })
 
+
 const fileFilter = (req, file, cd) => {
-    if(file.mimetype === 'image/png' || file.mimetype === 'image/jpeg') {
+    console.log(file)
+    if(file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg') {
         cd(null, true)
     } else {
         cd(null, false)
@@ -20,7 +23,12 @@ const fileFilter = (req, file, cd) => {
 }
 
 const limits = {
-    fileSize: 1024 * 1024 * 5
+    fileSize: 1024 * 1024 * 6,
+    it: () => console.log('limits - 1')
 }
 
-module.exports = multer({ storage, fileFilter, limits})
+limits.it()
+
+// console.log(storage)
+
+module.exports = multer({ storage, fileFilter, limits })

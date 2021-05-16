@@ -8,7 +8,7 @@ const productSchema = new Schema ({
     cod: {type: String, required: true}, // Нужно сделать уникальным?
     price: {type: Number, required: true},
     sale: {type: Number, required: true},
-    img: {type: [String], required: true},
+    imageSrc: {type: [String], required: true},
     description: {type: [String], required: true},
 })
 

@@ -1,7 +1,7 @@
 const {Router} = require('express');
-const SubCategory = require('../../models/products/SubCategory');
-const Product = require('../../models/products/Product');
 const {check, validationResult} = require('express-validator');
+const Product = require('../../models/products/Product');
+const SubCategory = require('../../models/products/SubCategory');
 const router = Router();
 
 router.post(
@@ -13,7 +13,7 @@ router.post(
         check('cod', 'Код').exists(),
         check('price', 'Цена').exists(),
         check('sale', 'Скидка').exists(),
-        check('img', 'Картинка').exists(),
+        check('imageSrc', 'Картинка').exists(),
         check('description', 'Описание').exists(),
     ],
     async (req, res) => {
@@ -28,7 +28,9 @@ router.post(
                 })
             }
     
-            const { parent, title, cod, price, sale, img, description, date } = req.body;
+            const { parent, title, cod, price, sale, description, date } = req.body;
+            
+            // const imageSrc = req.file ? req.file.path : '';
     
             const productName = await Product.findOne({ title, parent });
     
@@ -36,7 +38,7 @@ router.post(
                 return res.status(400).json({ message: 'Такой товар в это категории уже существует' });
             };
 
-            const newProduct = new Product({ parent, title, cod, price, sale, img, description, date });
+            const newProduct = new Product({ parent, title, cod, price, sale, imageSrc:  req.file ? req.file.path : '', description, date });
 
             
             await SubCategory.update({_id: parent},{ $push: {

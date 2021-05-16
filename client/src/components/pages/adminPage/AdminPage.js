@@ -1,10 +1,13 @@
 import {useState, useEffect, useContext} from 'react';
+import { useForm } from 'react-hook-form';
 import { useHttp } from '../../../hooks/http.hook';
 import { ProductsContext } from '../../context/ProductsContext';
 
 import './AdminPage.scss';
 
 export default function AdminPage () {
+
+    const { register, handleSubmit } = useForm();
 
     const { category, showCategory, subCategory, showSubCategory, products, showProducts } = useContext(ProductsContext);
 
@@ -19,13 +22,37 @@ export default function AdminPage () {
     })
 
     const [product, setProduct] = useState({
-        'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'img': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
+        // 'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'imageSrc': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
+        'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
     })
     
     const [subProduct, setSubProduct] = useState({
         'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'img': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
     })
+
+
+    /**
+     * ##############################################################################
+     */
+
+    const onSubmit = async (data) => {
+        console.log(data)
+        const formData = new FormData()
+        formData.append("imageSrc", data.imageSrc[0])
     
+        console.log(formData)
+        
+        await fetch("http://localhost:5000/api/image/saveImage", {
+          method: "POST",
+          body: formData
+        }).then(res => res.json())
+            .then(res => console.log(res))
+
+      }
+    /**
+     * ##############################################################################
+     */
+
 
     function changeHandlerCategory (e) {
         setCategoryName({ ...categoryName, [e.target.name]: e.target.value });
@@ -98,9 +125,16 @@ export default function AdminPage () {
         
     }, [error])
 
+
     return (
         <div className="AdminPage">
             <div className="AdminPage__form-wrap">
+                
+                <form  onSubmit={handleSubmit(onSubmit)}>
+                    <input {...register('imageSrc')} type="file" name="imageSrc"/>
+                    <button>Save Fucking image</button>
+                </form>
+
 
                 <form>
                     <h3> Название категории </h3>
@@ -134,7 +168,11 @@ export default function AdminPage () {
                     <input type="text" name="price" placeholder="price" onChange={changeHandlerProduct} />
                     <input type="number" name="sale" placeholder="sale" onChange={changeHandlerProduct} />
                     {/* <input type="text" name="img" placeholder="img" onChange={changeHandlerProduct} /> */}
-                    <input type="file" name="img" placeholder="img" onChange={changeHandlerProduct} />
+                    <input type="file" name="imageSrc" placeholder="img" onChange={changeHandlerProduct} />
+                    {/* <input type="file" name="imageSrc" placeholder="img" onChange={(e) => {
+                        console.log(e.target.files[0].name)
+                        setProduct({imageSrc : e.target.files[0].name})
+                    }} /> */}
                     <input type="text" name="description" placeholder="description" onChange={changeHandlerProduct} />
                     <button type="submit" onClick={createProduct} disabled={loading} >Добавить товар</button>
                 </form>
