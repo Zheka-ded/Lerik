@@ -1,9 +1,6 @@
 const {Router} = require('express');
 const Image = require('../models/Image');
-// const upload = require('../middleware/uploadNew');
-// const upload = require('../middleware/upload');
 const router = Router();
-
 
 router.post('/saveImage', async (req, res) => {
     try {
@@ -19,8 +16,6 @@ router.post('/saveImage', async (req, res) => {
 
             const date = new Date().toLocaleString('ua-UA').split('').filter(el => !isNaN(el) && el !== ' ').join('')
     
-            let r = imageSrc
-    
             imageSrc.mv(`./uploads/${imageSrc.name}/${date}-${Date.now()}-${imageSrc.name}`)
 
             const newImage = new Image({
@@ -34,11 +29,10 @@ router.post('/saveImage', async (req, res) => {
             res.send({
               status: true,
               message: "File is uploaded",
-              file: r
+              file: imageSrc
             })
 
         } else {
-
             res.send({
                 status: false,
                 message: "This is not a picture",

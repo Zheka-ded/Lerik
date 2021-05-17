@@ -135,7 +135,6 @@ export default function AdminPage () {
                     <button>Save Fucking image</button>
                 </form>
 
-
                 <form>
                     <h3> Название категории </h3>
                     <input type="text" name="title" placeholder="Основная категория" onChange={changeHandlerCategory} />
