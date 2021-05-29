@@ -22,7 +22,6 @@ export default function AdminPage () {
     })
 
     const [product, setProduct] = useState({
-        // 'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'imageSrc': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
         'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
     })
     
@@ -30,53 +29,50 @@ export default function AdminPage () {
         'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'img': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
     })
 
-
+    const [imageLoading, setImageLoading] = useState(false);
     /**
      * ##############################################################################
      */
-
-    const onSubmit = async (data) => {
-        console.log(data)
+    async function onSubmit (e) {
+        setImageLoading(true);
+        console.log(e)
         const formData = new FormData()
-        formData.append("imageSrc", data.imageSrc[0])
-    
-        console.log(formData)
+        formData.append("imageSrc", e.imageSrc[0])
+        formData.append("some", e.some)
+        console.log('formData - ', formData)
         
         await fetch("http://localhost:5000/api/image/saveImage", {
-          method: "POST",
-          body: formData
-        }).then(res => res.json())
-            .then(res => console.log(res))
+            method: "POST",
+            body: formData,
+        }).then(res => res.json()).then(res => res , setImageLoading(false))
 
-      }
+        
+    }
     /**
      * ##############################################################################
      */
-
-
     function changeHandlerCategory (e) {
         setCategoryName({ ...categoryName, [e.target.name]: e.target.value });
     }
 
-    
     async function createCategory (e) {
         // e.preventDefault();
         try {
             const data = await request('/api/category/createCategory', 'POST', {...categoryName});
             console.log('Data', data)
-            console.log('categoryName', categoryName)
+            console.log('categoryName', typeof categoryName)
             showCategory()
         } catch (e) {
 
         }
     }
-    
-
+    /**
+     * ##############################################################################
+     */
     function changeHandlerSubCategory (e) {
         setSubCategoryName({ ...subCategoryName, [e.target.name]: e.target.value });
     }
 
-    
     async function createSubCategory (e) {
         // e.preventDefault();
         try {
@@ -88,8 +84,9 @@ export default function AdminPage () {
 
         }
     }
-
-
+    /**
+     * ##############################################################################
+     */
     function changeHandlerProduct (e) {
         setProduct({ ...product, [e.target.name]: e.target.value})
     }
@@ -105,7 +102,9 @@ export default function AdminPage () {
 
         }
     }
-
+    /**
+     * ##############################################################################
+     */
     function changeHandlerSubProduct (e) {
         setSubProduct({ ...subProduct, [e.target.name]: e.target.value})
     }
@@ -120,11 +119,12 @@ export default function AdminPage () {
 
         }
     }
-    
+    /**
+     * ##############################################################################
+     */
     useEffect(() => {
         
     }, [error])
-
 
     return (
         <div className="AdminPage">
@@ -132,7 +132,8 @@ export default function AdminPage () {
                 
                 <form  onSubmit={handleSubmit(onSubmit)}>
                     <input {...register('imageSrc')} type="file" name="imageSrc"/>
-                    <button>Save Fucking image</button>
+                    <input {...register('some')} type="text" name="some" placeholder="some text"/>
+                    <button disabled={imageLoading}>Save Fucking image</button>
                 </form>
 
                 <form>
@@ -153,7 +154,7 @@ export default function AdminPage () {
                     <button type="submit" onClick={createSubCategory} disabled={loading} >Добавить подкатегорию</button>
                 </form>
                 
-                <form encType="multipart/form-data">
+                <form>
                     <h3> Описание товара </h3>
                     <select name="parent" id="" onChange={changeHandlerProduct}>
                         <option value="default">Выберите категорию</option>
@@ -177,7 +178,7 @@ export default function AdminPage () {
                 </form>
 
                 
-                <form encType="multipart/form-data">
+                <form>
                     <h3> Описание подтовара </h3>
 
                     <select name="parent" id="" onChange={changeHandlerSubProduct}>

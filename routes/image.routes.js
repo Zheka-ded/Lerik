@@ -4,40 +4,43 @@ const router = Router();
 
 router.post('/saveImage', async (req, res) => {
     try {
-      if(!req.files){
+      
+      if(!req.files || !req.body.some){
         res.send({
           status: false,
-          message: "No files"
+          message: "No files or data to save"
         })
       } else {
         const {imageSrc} = req.files
+        const {some} = req.body
 
         if (imageSrc.mimetype === 'image/png' || imageSrc.mimetype === 'image/jpeg' || imageSrc.mimetype === 'image/jpg') {
 
-            const date = new Date().toLocaleString('ua-UA').split('').filter(el => !isNaN(el) && el !== ' ').join('')
+          const date = new Date().toLocaleString('ua-UA').split('').filter(el => !isNaN(el) && el !== ' ').join('')
     
-            imageSrc.mv(`./uploads/${imageSrc.name}/${date}-${Date.now()}-${imageSrc.name}`)
+          imageSrc.mv(`./uploads/${imageSrc.name}/${date}-${Date.now()}-${imageSrc.name}`)
 
-            const newImage = new Image({
-                path: `./uploads/${imageSrc.name}`,
-                imageSrc: `${date}-${Date.now()}-${imageSrc.name}`,
-                name: imageSrc.name
-            });
+          const newImage = new Image({
+            some: some,
+            path: `./uploads/${imageSrc.name}`,
+            imageSrc: `${date}-${Date.now()}-${imageSrc.name}`,
+            name: imageSrc.name
+          });
 
-            await newImage.save()
+          await newImage.save()
       
-            res.send({
-              status: true,
-              message: "File is uploaded",
-              file: imageSrc
-            })
+          res.send({
+            status: true,
+            message: "File is uploaded",
+            file: imageSrc
+          })
 
         } else {
-            res.send({
-                status: false,
-                message: "This is not a picture",
-                name: imageSrc.name
-            })
+          res.send({
+            status: false,
+            message: "This is not a picture",
+            name: imageSrc.name
+          })
         }
       }
     } catch (e) {
