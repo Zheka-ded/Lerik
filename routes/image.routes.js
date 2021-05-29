@@ -4,15 +4,15 @@ const router = Router();
 
 router.post('/saveImage', async (req, res) => {
     try {
-      
-      if(!req.files || !req.body.some){
+
+      if(!req.files || !req.body.parent){
         res.send({
           status: false,
           message: "No files or data to save"
         })
       } else {
-        const {imageSrc} = req.files
-        const {some} = req.body
+        const { imageSrc } = req.files
+        const { parent } = req.body
 
         if (imageSrc.mimetype === 'image/png' || imageSrc.mimetype === 'image/jpeg' || imageSrc.mimetype === 'image/jpg') {
 
@@ -21,7 +21,7 @@ router.post('/saveImage', async (req, res) => {
           imageSrc.mv(`./uploads/${imageSrc.name}/${date}-${Date.now()}-${imageSrc.name}`)
 
           const newImage = new Image({
-            some: some,
+            parent: parent,
             path: `./uploads/${imageSrc.name}`,
             imageSrc: `${date}-${Date.now()}-${imageSrc.name}`,
             name: imageSrc.name

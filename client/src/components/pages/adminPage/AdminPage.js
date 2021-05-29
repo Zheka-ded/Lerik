@@ -38,13 +38,14 @@ export default function AdminPage () {
         console.log(e)
         const formData = new FormData()
         formData.append("imageSrc", e.imageSrc[0])
-        formData.append("some", e.some)
-        console.log('formData - ', formData)
+        formData.append("parent", e.parent)
+
+        // console.log('formData - ', formData)
         
         await fetch("http://localhost:5000/api/image/saveImage", {
             method: "POST",
             body: formData,
-        }).then(res => res.json()).then(res => res , setImageLoading(false))
+        }).then(res => res.json()).then(res => console.log(res) , setImageLoading(false))
 
         
     }
@@ -131,8 +132,14 @@ export default function AdminPage () {
             <div className="AdminPage__form-wrap">
                 
                 <form  onSubmit={handleSubmit(onSubmit)}>
+                    <select {...register('parent')} name="parent" id="">
+                        <option value="default">Выберите товар</option>
+                        {products !== null && products?.map(elem => (
+                            <option key={elem._id} value={elem._id}>{elem.title}</option>
+                        ))}
+                    </select>
+                    {/* <input {...register('parent')} type="text" name="parent" placeholder="some text"/> */}
                     <input {...register('imageSrc')} type="file" name="imageSrc"/>
-                    <input {...register('some')} type="text" name="some" placeholder="some text"/>
                     <button disabled={imageLoading}>Save Fucking image</button>
                 </form>
 
@@ -144,6 +151,7 @@ export default function AdminPage () {
 
                 <form>
                     <h3> Название подкатегории </h3>
+
                     <select name="parent" id="" onChange={changeHandlerSubCategory}>
                         <option value="default">Выберите категорию</option>
                         {category !== null && category?.map(elem => (
@@ -169,10 +177,6 @@ export default function AdminPage () {
                     <input type="number" name="sale" placeholder="sale" onChange={changeHandlerProduct} />
                     {/* <input type="text" name="img" placeholder="img" onChange={changeHandlerProduct} /> */}
                     <input type="file" name="imageSrc" placeholder="img" onChange={changeHandlerProduct} />
-                    {/* <input type="file" name="imageSrc" placeholder="img" onChange={(e) => {
-                        console.log(e.target.files[0].name)
-                        setProduct({imageSrc : e.target.files[0].name})
-                    }} /> */}
                     <input type="text" name="description" placeholder="description" onChange={changeHandlerProduct} />
                     <button type="submit" onClick={createProduct} disabled={loading} >Добавить товар</button>
                 </form>
@@ -192,8 +196,7 @@ export default function AdminPage () {
                     <input type="text" name="cod" placeholder="cod" onChange={changeHandlerSubProduct} />
                     <input type="text" name="price" placeholder="price" onChange={changeHandlerSubProduct} />
                     <input type="number" name="sale" placeholder="sale" onChange={changeHandlerSubProduct} />
-                    {/* <input type="text" name="img" placeholder="img" onChange={changeHandlerSubProduct} /> */}
-                    <input type="file" name="img" placeholder="img" onChange={changeHandlerSubProduct} />
+                    <input type="file" name="img" onChange={changeHandlerSubProduct} />
                     <input type="text" name="description" placeholder="description" onChange={changeHandlerSubProduct} />
                     <button type="submit" onClick={createSubProduct} disabled={loading} >Добавить товар</button>
                 </form>
