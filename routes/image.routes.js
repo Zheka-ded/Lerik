@@ -1,16 +1,17 @@
 const {Router} = require('express');
 const Image = require('../models/Image');
+const Product = require('../models/products/Product')
 const router = Router();
 
 router.post('/saveImage', async (req, res) => {
     try {
-
       if(!req.files || !req.body.parent){
         res.send({
           status: false,
           message: "No files or data to save"
         })
       } else {
+        console.log(req.files)
         const { imageSrc } = req.files
         const { parent } = req.body
 
@@ -18,14 +19,17 @@ router.post('/saveImage', async (req, res) => {
 
           const date = new Date().toLocaleString('ua-UA').split('').filter(el => !isNaN(el) && el !== ' ').join('')
     
-          imageSrc.mv(`./uploads/${imageSrc.name}/${date}-${Date.now()}-${imageSrc.name}`)
+          imageSrc.mv(`./uploads/${parent}/${date}_${imageSrc.name}`)
 
           const newImage = new Image({
             parent: parent,
-            path: `./uploads/${imageSrc.name}`,
-            imageSrc: `${date}-${Date.now()}-${imageSrc.name}`,
+            imageSrc: `./uploads/${parent}/${date}_${imageSrc.name}`,
             name: imageSrc.name
           });
+
+          await Product.update({_id: parent},{ $push: {
+            imageSrc: `./uploads/${parent}/${date}_${imageSrc.name}`
+          }})
 
           await newImage.save()
       

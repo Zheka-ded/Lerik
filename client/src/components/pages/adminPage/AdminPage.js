@@ -129,6 +129,7 @@ export default function AdminPage () {
 
     return (
         <div className="AdminPage">
+            
             <div className="AdminPage__form-wrap">
                 
                 <form  onSubmit={handleSubmit(onSubmit)}>
@@ -176,7 +177,7 @@ export default function AdminPage () {
                     <input type="text" name="price" placeholder="price" onChange={changeHandlerProduct} />
                     <input type="number" name="sale" placeholder="sale" onChange={changeHandlerProduct} />
                     {/* <input type="text" name="img" placeholder="img" onChange={changeHandlerProduct} /> */}
-                    <input type="file" name="imageSrc" placeholder="img" onChange={changeHandlerProduct} />
+                    {/* <input type="file" name="imageSrc" placeholder="img" onChange={changeHandlerProduct} /> */}
                     <input type="text" name="description" placeholder="description" onChange={changeHandlerProduct} />
                     <button type="submit" onClick={createProduct} disabled={loading} >Добавить товар</button>
                 </form>
