@@ -2,7 +2,6 @@ const {Schema, model, Types} = require('mongoose');
 
 const productSchema = new Schema ({
     category: {ref: 'SubCategories', type: Types.ObjectId},
-    // parent: {ref: 'SubCategories', type: Types.ObjectId},
     child: [{ref: 'Products', type: Types.ObjectId}],
     title: {type: String, required: true}, // Нужно сделать уникальным?
     subProduct: {type: Boolean,},

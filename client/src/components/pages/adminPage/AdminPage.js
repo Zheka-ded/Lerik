@@ -193,7 +193,7 @@ export default function AdminPage () {
                     </label>
 
                     {checkSubProduct && 
-                        <select name="parent" id="" onChange={changeHandlerProduct}>
+                        <select name="selfID" id="" onChange={changeHandlerProduct}>
                             <option value="default">Выберите товар</option>
                             {products !== null && products?.map(elem => (
                                 <option key={elem._id} value={elem._id}>{elem.title}</option>

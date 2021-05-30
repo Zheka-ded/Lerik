@@ -27,7 +27,7 @@ router.post(
                 })
             }
     
-            const { category, title, cod, price, subProduct, sale, description, date } = req.body;
+            const { category, selfID, title, cod, price, subProduct, sale, description, date } = req.body;
     
             const productName = await Product.findOne({ title, category });
     
@@ -35,12 +35,17 @@ router.post(
                 return res.status(400).json({ message: 'Такой товар в это категории уже существует' });
             };
 
-            const newProduct = new Product({ category, title, cod, price, subProduct, sale, description, date });
+            const newProduct = new Product({ category, selfID, title, cod, price, subProduct, sale, description, date });
 
-            
-            await SubCategory.update({_id: category},{ $push: {
-                child: await newProduct.save()
-            }})
+            if(subProduct){
+                await Product.update({_id: selfID},{ $push: {
+                    child: await newProduct.save()
+                }})
+            } else {
+                await SubCategory.update({_id: category},{ $push: {
+                    child: await newProduct.save()
+                }})
+            }
 
             
     
