@@ -60,18 +60,11 @@ table {
 	border-spacing: 0;
 }
 
-input, button{
-	-webkit-appearance: none;
+label{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
 }
-
-input[type="checkbox"]{
-	-webkit-appearance: checkbox;
-}
-
-// label{
-// 	display: flex;
-// 	flex-direction: row;
-// }
 
 button{
 	cursor: pointer;
@@ -130,4 +123,14 @@ form{
 		transition: 0.3s all ease;
 	}
 
+}
+
+input, button{
+	-webkit-appearance: none;
+}
+
+
+input[type="checkbox"]{
+	-webkit-appearance: checkbox;
+	width: initial;
 }

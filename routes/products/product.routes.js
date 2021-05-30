@@ -7,7 +7,7 @@ const router = Router();
 router.post(
     '/createProduct',
     [
-        check('parent', 'Родительская категория').exists(),
+        check('category', 'Родительская категория').exists(),
         check('title', 'Название').exists(),
         check('date', 'DATE').exists(),
         check('cod', 'Код').exists(),
@@ -27,18 +27,18 @@ router.post(
                 })
             }
     
-            const { parent, title, cod, price, sale, description, date } = req.body;
+            const { category, title, cod, price, subProduct, sale, description, date } = req.body;
     
-            const productName = await Product.findOne({ title, parent });
+            const productName = await Product.findOne({ title, category });
     
             if (productName) {
                 return res.status(400).json({ message: 'Такой товар в это категории уже существует' });
             };
 
-            const newProduct = new Product({ parent, title, cod, price, sale, description, date });
+            const newProduct = new Product({ category, title, cod, price, subProduct, sale, description, date });
 
             
-            await SubCategory.update({_id: parent},{ $push: {
+            await SubCategory.update({_id: category},{ $push: {
                 child: await newProduct.save()
             }})
 

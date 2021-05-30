@@ -22,14 +22,23 @@ export default function AdminPage () {
     })
 
     const [product, setProduct] = useState({
-        'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
+        'category': '',
+        'title': '',
+        'cod': '',
+        'price': '',
+        'subProduct': false,
+        'sale': '',
+        'description': '',
+        'date': new Date().toLocaleString('ua-UA'),
     })
     
-    const [subProduct, setSubProduct] = useState({
-        'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'img': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
-    })
+    // const [subProduct, setSubProduct] = useState({
+    //     'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'img': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
+    // })
 
     const [imageLoading, setImageLoading] = useState(false);
+
+    const [checkSubProduct, setCheckSubProduct] = useState(false)
     /**
      * ##############################################################################
      */
@@ -89,7 +98,13 @@ export default function AdminPage () {
      * ##############################################################################
      */
     function changeHandlerProduct (e) {
-        setProduct({ ...product, [e.target.name]: e.target.value})
+        setProduct({ ...product,
+            [e.target.name] : e.target.type === 'checkbox'? isChecked(e.target.checked) : e.target.value})
+    }
+
+    const isChecked = (check) => {
+        setCheckSubProduct(check)
+        return check ? true : false
     }
 
     async function createProduct (e) {
@@ -106,20 +121,20 @@ export default function AdminPage () {
     /**
      * ##############################################################################
      */
-    function changeHandlerSubProduct (e) {
-        setSubProduct({ ...subProduct, [e.target.name]: e.target.value})
-    }
+    // function changeHandlerSubProduct (e) {
+    //     setSubProduct({ ...subProduct, [e.target.name]: e.target.value})
+    // }
 
-    async function createSubProduct (e) {
-        // e.preventDefault();
-        try {
-            const data = await request('/api/subProducts/createSubProduct', 'POST', {...subProduct});
-            console.log('Data', data)
-            console.log('SUBProduct', subProduct)
-        } catch (e) {
+    // async function createSubProduct (e) {
+    //     // e.preventDefault();
+    //     try {
+    //         const data = await request('/api/subProducts/createSubProduct', 'POST', {...subProduct});
+    //         console.log('Data', data)
+    //         console.log('SUBProduct', subProduct)
+    //     } catch (e) {
 
-        }
-    }
+    //     }
+    // }
     /**
      * ##############################################################################
      */
@@ -165,17 +180,30 @@ export default function AdminPage () {
                 
                 <form>
                     <h3> Описание товара </h3>
-                    <select name="parent" id="" onChange={changeHandlerProduct}>
+                    <select name="category" id="" onChange={changeHandlerProduct}>
                         <option value="default">Выберите категорию</option>
                         {subCategory !== null && subCategory?.map(elem => (
                             <option key={elem._id} value={elem._id}>{elem.title}</option>
                         ))}
                     </select>
 
+                    <label>
+                        <input type="checkbox" name="subProduct" onChange={changeHandlerProduct}/>
+                        Подотовар ?
+                    </label>
+
+                    {checkSubProduct && 
+                        <select name="parent" id="" onChange={changeHandlerProduct}>
+                            <option value="default">Выберите товар</option>
+                            {products !== null && products?.map(elem => (
+                                <option key={elem._id} value={elem._id}>{elem.title}</option>
+                            ))}
+                        </select>} 
+
                     <input type="text" name="title" placeholder="title" onChange={changeHandlerProduct} />
                     <input type="text" name="cod" placeholder="cod" onChange={changeHandlerProduct} />
                     <input type="text" name="price" placeholder="price" onChange={changeHandlerProduct} />
-                    <input type="number" name="sale" placeholder="sale" onChange={changeHandlerProduct} />
+                    <input type="text" name="sale" placeholder="sale" onChange={changeHandlerProduct} />
                     {/* <input type="text" name="img" placeholder="img" onChange={changeHandlerProduct} /> */}
                     {/* <input type="file" name="imageSrc" placeholder="img" onChange={changeHandlerProduct} /> */}
                     <input type="text" name="description" placeholder="description" onChange={changeHandlerProduct} />
@@ -183,9 +211,8 @@ export default function AdminPage () {
                 </form>
 
                 
-                <form>
+                {/* <form>
                     <h3> Описание подтовара </h3>
-
                     <select name="parent" id="" onChange={changeHandlerSubProduct}>
                         <option value="default">Выберите товар</option>
                         {products !== null && products?.map(elem => (
@@ -200,7 +227,7 @@ export default function AdminPage () {
                     <input type="file" name="img" onChange={changeHandlerSubProduct} />
                     <input type="text" name="description" placeholder="description" onChange={changeHandlerSubProduct} />
                     <button type="submit" onClick={createSubProduct} disabled={loading} >Добавить товар</button>
-                </form>
+                </form> */}
 
             </div>
         </div>
