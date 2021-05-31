@@ -18,7 +18,8 @@ export default function AdminPage () {
     })
 
     const [subCategoryName, setSubCategoryName] = useState({
-        'title': ''
+        'title': '',
+        'checkSubCategory': false,
     })
 
     const [product, setProduct] = useState({
@@ -26,19 +27,14 @@ export default function AdminPage () {
         'title': '',
         'cod': '',
         'price': '',
-        'subProduct': false,
         'sale': '',
         'description': '',
         'date': new Date().toLocaleString('ua-UA'),
     })
-    
-    // const [subProduct, setSubProduct] = useState({
-    //     'parent': '', 'title': '', 'cod': '', 'price': '', 'sale': '', 'img': '', 'description': '', 'date': new Date().toLocaleString('ua-UA'),
-    // })
 
     const [imageLoading, setImageLoading] = useState(false);
 
-    const [checkSubProduct, setCheckSubProduct] = useState(false)
+    const [checkChildSubCategory, setCheckChildSubCategory] = useState(false)
     /**
      * ##############################################################################
      */
@@ -48,8 +44,6 @@ export default function AdminPage () {
         const formData = new FormData()
         formData.append("imageSrc", e.imageSrc[0])
         formData.append("parent", e.parent)
-
-        // console.log('formData - ', formData)
         
         await fetch("http://localhost:5000/api/image/saveImage", {
             method: "POST",
@@ -80,8 +74,16 @@ export default function AdminPage () {
      * ##############################################################################
      */
     function changeHandlerSubCategory (e) {
-        setSubCategoryName({ ...subCategoryName, [e.target.name]: e.target.value });
+        setSubCategoryName({ ...subCategoryName,
+            [e.target.name] : e.target.type === 'checkbox'? isChecked(e.target.checked) : e.target.value});
     }
+    
+
+    const isChecked = (check) => {
+        setCheckChildSubCategory(check)
+        return check ? true : false
+    }
+
 
     async function createSubCategory (e) {
         // e.preventDefault();
@@ -98,15 +100,8 @@ export default function AdminPage () {
      * ##############################################################################
      */
     function changeHandlerProduct (e) {
-        setProduct({ ...product,
-            [e.target.name] : e.target.type === 'checkbox'? isChecked(e.target.checked) : e.target.value})
+        setProduct({ ...product, [e.target.name] : e.target.value})
     }
-
-    const isChecked = (check) => {
-        setCheckSubProduct(check)
-        return check ? true : false
-    }
-
     async function createProduct (e) {
         // e.preventDefault();
         try {
@@ -121,23 +116,6 @@ export default function AdminPage () {
     /**
      * ##############################################################################
      */
-    // function changeHandlerSubProduct (e) {
-    //     setSubProduct({ ...subProduct, [e.target.name]: e.target.value})
-    // }
-
-    // async function createSubProduct (e) {
-    //     // e.preventDefault();
-    //     try {
-    //         const data = await request('/api/subProducts/createSubProduct', 'POST', {...subProduct});
-    //         console.log('Data', data)
-    //         console.log('SUBProduct', subProduct)
-    //     } catch (e) {
-
-    //     }
-    // }
-    /**
-     * ##############################################################################
-     */
     useEffect(() => {
         
     }, [error])
@@ -146,18 +124,6 @@ export default function AdminPage () {
         <div className="AdminPage">
             
             <div className="AdminPage__form-wrap">
-                
-                <form  onSubmit={handleSubmit(onSubmit)}>
-                    <select {...register('parent')} name="parent" id="">
-                        <option value="default">Выберите товар</option>
-                        {products !== null && products?.map(elem => (
-                            <option key={elem._id} value={elem._id}>{elem.title}</option>
-                        ))}
-                    </select>
-                    {/* <input {...register('parent')} type="text" name="parent" placeholder="some text"/> */}
-                    <input {...register('imageSrc')} type="file" name="imageSrc"/>
-                    <button disabled={imageLoading}>Save Fucking image</button>
-                </form>
 
                 <form>
                     <h3> Название категории </h3>
@@ -174,6 +140,20 @@ export default function AdminPage () {
                             <option key={elem._id} value={elem._id}>{elem.title}</option>
                         ))}
                     </select>
+                    
+                    <label>
+                        <input type="checkbox" name="checkSubCategory" onChange={changeHandlerSubCategory}/>
+                        Подотовар ?
+                    </label>
+
+                    {checkChildSubCategory && 
+                        <select name="selfID" id="" onChange={changeHandlerSubCategory}>
+                            <option value="default">Выберите товар</option>
+                            {subCategory !== null && subCategory?.map(elem => (
+                                <option key={elem._id} value={elem._id}>{elem.title}</option>
+                            ))}
+                        </select>}
+
                     <input type="text" name="title" placeholder="Название подкатегории" onChange={changeHandlerSubCategory} />
                     <button type="submit" onClick={createSubCategory} disabled={loading} >Добавить подкатегорию</button>
                 </form>
@@ -187,47 +167,24 @@ export default function AdminPage () {
                         ))}
                     </select>
 
-                    <label>
-                        <input type="checkbox" name="subProduct" onChange={changeHandlerProduct}/>
-                        Подотовар ?
-                    </label>
-
-                    {checkSubProduct && 
-                        <select name="selfID" id="" onChange={changeHandlerProduct}>
-                            <option value="default">Выберите товар</option>
-                            {products !== null && products?.map(elem => (
-                                <option key={elem._id} value={elem._id}>{elem.title}</option>
-                            ))}
-                        </select>} 
-
                     <input type="text" name="title" placeholder="title" onChange={changeHandlerProduct} />
                     <input type="text" name="cod" placeholder="cod" onChange={changeHandlerProduct} />
                     <input type="text" name="price" placeholder="price" onChange={changeHandlerProduct} />
                     <input type="text" name="sale" placeholder="sale" onChange={changeHandlerProduct} />
-                    {/* <input type="text" name="img" placeholder="img" onChange={changeHandlerProduct} /> */}
-                    {/* <input type="file" name="imageSrc" placeholder="img" onChange={changeHandlerProduct} /> */}
                     <input type="text" name="description" placeholder="description" onChange={changeHandlerProduct} />
                     <button type="submit" onClick={createProduct} disabled={loading} >Добавить товар</button>
                 </form>
-
                 
-                {/* <form>
-                    <h3> Описание подтовара </h3>
-                    <select name="parent" id="" onChange={changeHandlerSubProduct}>
+                <form  onSubmit={handleSubmit(onSubmit)}>
+                    <select {...register('parent')} name="parent" id="">
                         <option value="default">Выберите товар</option>
                         {products !== null && products?.map(elem => (
                             <option key={elem._id} value={elem._id}>{elem.title}</option>
                         ))}
                     </select>
-
-                    <input type="text" name="title" placeholder="title" onChange={changeHandlerSubProduct} />
-                    <input type="text" name="cod" placeholder="cod" onChange={changeHandlerSubProduct} />
-                    <input type="text" name="price" placeholder="price" onChange={changeHandlerSubProduct} />
-                    <input type="number" name="sale" placeholder="sale" onChange={changeHandlerSubProduct} />
-                    <input type="file" name="img" onChange={changeHandlerSubProduct} />
-                    <input type="text" name="description" placeholder="description" onChange={changeHandlerSubProduct} />
-                    <button type="submit" onClick={createSubProduct} disabled={loading} >Добавить товар</button>
-                </form> */}
+                    <input {...register('imageSrc')} type="file" name="imageSrc"/>
+                    <button disabled={imageLoading}>Save Fucking image</button>
+                </form>
 
             </div>
         </div>

@@ -27,8 +27,6 @@ app.use('/api/subCategory', require('./routes/products/subCategory.routes'));
 
 app.use('/api/products', require('./routes/products/product.routes'));
 
-app.use('/api/subProducts', require('./routes/products/subProduct.routes'));
-
 app.use('/api/image', require('./routes/image.routes'));
 
 

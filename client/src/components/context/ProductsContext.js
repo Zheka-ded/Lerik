@@ -9,6 +9,4 @@ export const ProductsContext = createContext({
     showSubCategory: noop(),
     products: null,
     showProducts: noop(),
-    subProducts: null,
-    showSubProducts: noop(),
 })

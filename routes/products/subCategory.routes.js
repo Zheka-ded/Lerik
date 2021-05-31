@@ -24,7 +24,7 @@ router.post(
                 })
             }
     
-            const { title, parent } = req.body;
+            const { title, parent, selfID, checkSubCategory, } = req.body;
     
             const subCategoryName = await SubCategory.findOne({ title });
 
@@ -32,11 +32,19 @@ router.post(
                 return res.status(400).json({ message: 'Такая подкатегория существует' });
             };
     
-            const newSubCategoryName = new SubCategory({ title, parent });
+            const newSubCategoryName = new SubCategory({ title, parent, selfID, checkSubCategory, });
 
-            await Category.update({_id: parent},{ $push: {
-                child: await newSubCategoryName.save()
-            }})
+            if(checkSubCategory){
+
+                await SubCategory.update({_id: selfID},{ $push: {
+                    childSubCategory: await newSubCategoryName.save()
+                }})
+
+            } else {
+                await Category.update({_id: parent},{ $push: {
+                    child: await newSubCategoryName.save()
+                }})
+            }
     
             res.status(201).json({ message: 'Подкатегория создана' });
     

@@ -27,7 +27,6 @@ export default function App () {
     const [category, setCategory] = useState(null);
     const [subCategory, setSubCategory] = useState(null);
     const [products, setProducts] = useState(null);
-    const [subProducts, setSubProducts] = useState(null);
 
     async function showCategory () {
         try {
@@ -59,30 +58,19 @@ export default function App () {
         }
     }
 
-    async function showSubProducts () {
-        try {
-            const fetched = await request('/api/subProducts/loading', 'GET', null);
-            // console.log('SUBProducts', fetched)
-            setSubProducts(fetched);
-        } catch (e) {
-            
-        }
-    }
-
     // Не правильно тут
     useState(() => {
         showCategory()
         showSubCategory()
         showProducts()
-        showSubProducts()
-    }, [showCategory, showSubCategory, showProducts, showSubProducts])
+    }, [showCategory, showSubCategory, showProducts])
 
     // console.log(baseCategory)
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     return (
         <ProductsContext.Provider value = {{ category, showCategory, subCategory, showSubCategory, 
-                                            products, showProducts, subProducts, showSubProducts }}>
+                                            products, showProducts}}>
 
             <AuthContext.Provider value={{ token, login, logout, adminId, isAuthenticated }}>
                 <Router>
